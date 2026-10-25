@@ -63,7 +63,7 @@ public final class Punisher {
 				runtime.markPunish(target);
 				if (!runtime.config().isAccumulative()) {
 					// Tras el castigo la palabra cambia: la que mas repite el dueno.
-					String newWord = runtime.rotateWord(target.getUUID(), true);
+					String newWord = runtime.rotateWord(target.getUuid(), true);
 					runtime.sendNotice(target, "palabraprohibida.notice.word_rotated",
 							com.palabraprohibida.word.WordHash.displayWord(newWord));
 					runtime.syncStateAll();
@@ -165,7 +165,7 @@ public final class Punisher {
 		int slot = filled.get(RANDOM.nextInt(filled.size()));
 		ItemStack stack = inventory.getStack(slot);
 		inventory.setStack(slot, ItemStack.EMPTY);
-		target.dropItem(world, stack);
+		target.dropStack(world, stack);
 		return true;
 	}
 
@@ -254,7 +254,7 @@ public final class Punisher {
 			ItemStack stack = inventory.getStack(i);
 			if (!stack.isEmpty()) {
 				inventory.setStack(i, ItemStack.EMPTY);
-				target.dropItem(world, stack);
+				target.dropStack(world, stack);
 				dropped = true;
 			}
 		}
@@ -267,8 +267,8 @@ public final class Punisher {
 				"execute positioned %.2f %.2f %.2f run summon minecraft:%s ~ ~ ~",
 				target.getX(), target.getY(), target.getZ(), mob);
 		try {
-			runtime.server().getCommandManager().executeWithPrefix(
-					runtime.server().getCommandSource().withSilent(), command);
+			runtime.server().getCommandManager().getDispatcher().execute(
+					command, runtime.server().getCommandSource().withSilent());
 			return true;
 		} catch (Exception e) {
 			Pp.LOG.warn("No se pudo invocar el mob: {}", e.getMessage());

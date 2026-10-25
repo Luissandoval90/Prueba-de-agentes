@@ -30,7 +30,7 @@ public final class Json {
 			String raw = Files.readString(path, StandardCharsets.UTF_8);
 			T value = PRETTY.fromJson(raw, type);
 			return value == null ? fallback : value;
-		} catch (IOException | JsonSyntaxException | RuntimeException e) {
+		} catch (IOException | RuntimeException e) {
 			Pp.LOG.warn("JSON invalido en {}: {}", path, e.getMessage());
 			quarantine(path);
 			return fallback;
