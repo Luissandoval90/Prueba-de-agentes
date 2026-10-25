@@ -24,7 +24,7 @@ public final class Payloads {
 	public record ConfigSync(String json) implements CustomPayload {
 		public static final CustomPayload.Id<ConfigSync> ID = new CustomPayload.Id<>(Pp.id("config_sync"));
 		public static final PacketCodec<RegistryByteBuf, ConfigSync> CODEC = PacketCodec.of(
-				(buf, value) -> buf.writeString(value.json, MAX_JSON),
+				(value, buf) -> buf.writeString(value.json, MAX_JSON),
 				buf -> new ConfigSync(buf.readString(MAX_JSON)));
 
 		@Override
@@ -36,7 +36,7 @@ public final class Payloads {
 	public record State(String json) implements CustomPayload {
 		public static final CustomPayload.Id<State> ID = new CustomPayload.Id<>(Pp.id("state"));
 		public static final PacketCodec<RegistryByteBuf, State> CODEC = PacketCodec.of(
-				(buf, value) -> buf.writeString(value.json, MAX_JSON),
+				(value, buf) -> buf.writeString(value.json, MAX_JSON),
 				buf -> new State(buf.readString(MAX_JSON)));
 
 		@Override
@@ -48,7 +48,7 @@ public final class Payloads {
 	public record Punish(String type, String message) implements CustomPayload {
 		public static final CustomPayload.Id<Punish> ID = new CustomPayload.Id<>(Pp.id("punish"));
 		public static final PacketCodec<RegistryByteBuf, Punish> CODEC = PacketCodec.of(
-				(buf, value) -> {
+				(value, buf) -> {
 					buf.writeString(value.type, 64);
 					buf.writeString(value.message, MAX_TEXT);
 				},
@@ -63,7 +63,7 @@ public final class Payloads {
 	public record Notice(String json) implements CustomPayload {
 		public static final CustomPayload.Id<Notice> ID = new CustomPayload.Id<>(Pp.id("notice"));
 		public static final PacketCodec<RegistryByteBuf, Notice> CODEC = PacketCodec.of(
-				(buf, value) -> buf.writeString(value.json, 2048),
+				(value, buf) -> buf.writeString(value.json, 2048),
 				buf -> new Notice(buf.readString(2048)));
 
 		@Override
@@ -77,7 +77,7 @@ public final class Payloads {
 	public record SpokenWord(UUID speaker, String word) implements CustomPayload {
 		public static final CustomPayload.Id<SpokenWord> ID = new CustomPayload.Id<>(Pp.id("spoken_word"));
 		public static final PacketCodec<RegistryByteBuf, SpokenWord> CODEC = PacketCodec.of(
-				(buf, value) -> {
+				(value, buf) -> {
 					buf.writeUuid(value.speaker);
 					buf.writeString(value.word, 96);
 				},
@@ -92,7 +92,7 @@ public final class Payloads {
 	public record Talk(String text) implements CustomPayload {
 		public static final CustomPayload.Id<Talk> ID = new CustomPayload.Id<>(Pp.id("talk"));
 		public static final PacketCodec<RegistryByteBuf, Talk> CODEC = PacketCodec.of(
-				(buf, value) -> buf.writeString(value.text, MAX_TEXT),
+				(value, buf) -> buf.writeString(value.text, MAX_TEXT),
 				buf -> new Talk(buf.readString(MAX_TEXT)));
 
 		@Override
@@ -104,7 +104,7 @@ public final class Payloads {
 	public record ConfigUpdate(String json) implements CustomPayload {
 		public static final CustomPayload.Id<ConfigUpdate> ID = new CustomPayload.Id<>(Pp.id("config_update"));
 		public static final PacketCodec<RegistryByteBuf, ConfigUpdate> CODEC = PacketCodec.of(
-				(buf, value) -> buf.writeString(value.json, MAX_JSON),
+				(value, buf) -> buf.writeString(value.json, MAX_JSON),
 				buf -> new ConfigUpdate(buf.readString(MAX_JSON)));
 
 		@Override
@@ -116,7 +116,7 @@ public final class Payloads {
 	public record Action(String action, String data) implements CustomPayload {
 		public static final CustomPayload.Id<Action> ID = new CustomPayload.Id<>(Pp.id("action"));
 		public static final PacketCodec<RegistryByteBuf, Action> CODEC = PacketCodec.of(
-				(buf, value) -> {
+				(value, buf) -> {
 					buf.writeString(value.action, 64);
 					buf.writeString(value.data, MAX_JSON);
 				},

@@ -15,7 +15,7 @@ public enum PunishmentType {
 	HUNGER("hunger", "minecraft:rotten_flesh", false, new PunishmentConfig(true, 3).with("points", 6)),
 	HOTBAR_SHUFFLE("hotbar_shuffle", "minecraft:barrel", false, new PunishmentConfig(true, 3)),
 	ARMOR_DROP("armor_drop", "minecraft:iron_chestplate", false, new PunishmentConfig(true, 2)),
-	MOB("mob", "minecraft:zombie_head", false, new PunishmentConfig(true, 2).with("count", 1).flag("creeper", false)),
+	MOB("mob", "minecraft:zombie_head", false, new PunishmentConfig(true, 2).with("count", 1).withFlag("creeper", false)),
 	ROULETTE("roulette", "minecraft:target", false, new PunishmentConfig(true, 2)),
 	SWAP("swap", "minecraft:ender_eye", false, new PunishmentConfig(true, 2)),
 	NO_JUMP("no_jump", "minecraft:iron_boots", false, new PunishmentConfig(true, 3).with("seconds", 8)),

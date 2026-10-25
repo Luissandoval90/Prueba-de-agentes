@@ -33,7 +33,7 @@ public final class Actions {
 				if (targetPlayer == null) {
 					return;
 				}
-				String word = runtime.rotateWord(targetPlayer.getUUID(), true);
+				String word = runtime.rotateWord(targetPlayer.getUuid(), true);
 				runtime.sendNotice(targetPlayer, "palabraprohibida.notice.new_word",
 						WordHash.displayWord(word));
 				runtime.syncStateAll();

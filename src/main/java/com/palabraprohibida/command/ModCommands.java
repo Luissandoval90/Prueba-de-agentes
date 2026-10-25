@@ -101,7 +101,7 @@ public final class ModCommands {
 			source.sendError(Compat.text("palabraprohibida.command.bad_word"));
 			return 0;
 		}
-		runtime.state().setWord(target.getUUID(), normalized);
+		runtime.state().setWord(target.getUuid(), normalized);
 		runtime.markDirty();
 		runtime.syncStateAll();
 		source.sendFeedback(() -> Compat.text("palabraprohibida.command.word_set",
@@ -114,7 +114,7 @@ public final class ModCommands {
 		if (runtime == null) {
 			return 0;
 		}
-		String word = runtime.rotateWord(target.getUUID(), true);
+		String word = runtime.rotateWord(target.getUuid(), true);
 		runtime.syncStateAll();
 		source.sendFeedback(() -> Compat.text("palabraprohibida.command.word_new",
 				target.getName().getString(), WordHash.displayWord(word)), true);

@@ -13,9 +13,9 @@ classes/
 .classpath
 
 # Minecraft / ejecución
-run/
-logs/
-config/
+/run/
+/logs/
+/config/
 *.log
 
 # Sistema

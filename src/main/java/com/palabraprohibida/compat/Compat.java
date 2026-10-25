@@ -51,7 +51,7 @@ public final class Compat {
 	}
 
 	public static ServerWorld serverWorldOf(ServerPlayerEntity player) {
-		return player.getServerWorld();
+		return (ServerWorld) player.getEntityWorld();
 	}
 
 	public static String dimensionId(World world) {
@@ -68,7 +68,8 @@ public final class Compat {
 			if (player.getPermissions().hasPermission(DefaultPermissions.GAMEMASTERS)) {
 				return true;
 			}
-			return player.getServer() != null && player.getServer().isHost(player.getPlayerConfigEntry());
+			ServerWorld world = serverWorldOf(player);
+			return world.getServer() != null && world.getServer().isHost(player.getPlayerConfigEntry());
 		} catch (Exception e) {
 			Pp.LOG.debug("No se pudo comprobar el permiso: {}", e.getMessage());
 			return false;

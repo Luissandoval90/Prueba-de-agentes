@@ -16,6 +16,7 @@ import com.palabraprohibida.word.WordHash;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -221,7 +222,7 @@ public final class ServerRuntime {
 	}
 
 	public void onDisconnect(ServerPlayerEntity player) {
-		reportWindow.remove(player.getUUID());
+		reportWindow.remove(player.getUuid());
 		dirty = true;
 	}
 
@@ -246,10 +247,10 @@ public final class ServerRuntime {
 	}
 
 	private void ensureWord(ServerPlayerEntity player) {
-		if (state.wordOf(player.getUUID()) != null) {
+		if (state.wordOf(player.getUuid()) != null) {
 			return;
 		}
-		state.setWord(player.getUUID(), pickFreshWord(player.getUUID()));
+		state.setWord(player.getUuid(), pickFreshWord(player.getUuid()));
 		dirty = true;
 	}
 
@@ -308,7 +309,7 @@ public final class ServerRuntime {
 			return;
 		}
 		for (String word : WordHash.words(text)) {
-			state.addWordUse(player.getUUID(), word, config);
+			state.addWordUse(player.getUuid(), word, config);
 		}
 		dirty = true;
 	}
@@ -318,7 +319,7 @@ public final class ServerRuntime {
 		if (word.isEmpty()) {
 			return;
 		}
-		if (!allowReport(reporter.getUUID())) {
+		if (!allowReport(reporter.getUuid())) {
 			return;
 		}
 		long now = System.currentTimeMillis();
@@ -365,7 +366,7 @@ public final class ServerRuntime {
 		if (ownerPlayer == null) {
 			return;
 		}
-		if (speaker != null && !speaker.getUUID().equals(owner)) {
+		if (speaker != null && !speaker.getUuid().equals(owner)) {
 			String ownerName = ownerPlayer.getName().getString();
 			sendNotice(speaker, "palabraprohibida.notice.was_owner_word", ownerName);
 		}
@@ -475,9 +476,9 @@ public final class ServerRuntime {
 		}
 		long interval = config.rotationMinutes * 60_000L;
 		for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-			long last = state.lastRotate.getOrDefault(player.getUUID().toString(), now);
+			long last = state.lastRotate.getOrDefault(player.getUuid().toString(), now);
 			if (now - last >= interval) {
-				String word = rotateWord(player.getUUID(), true);
+				String word = rotateWord(player.getUuid(), true);
 				sendNotice(player, "palabraprohibida.notice.word_rotated", WordHash.displayWord(word));
 				syncStateAll();
 			}
@@ -535,7 +536,7 @@ public final class ServerRuntime {
 		payload.salt = salt;
 		payload.hashes = new ArrayList<>(watchedHashes());
 		payload.admin = isAdmin(player);
-		payload.me = player.getUUID().toString();
+		payload.me = player.getUuid().toString();
 		Net.toPlayer(player, new Payloads.ConfigSync(Json.COMPACT.toJson(payload)));
 	}
 
@@ -575,7 +576,7 @@ public final class ServerRuntime {
 	/** El dueño de la palabra no la ve salvo que juegue solo o lo permita el admin. */
 	private String echoFor(ServerPlayerEntity viewer, String ownerId, String word) {
 		boolean alone = server.getPlayerManager().getPlayerList().size() <= 1;
-		boolean own = viewer.getUUID().toString().equals(ownerId);
+		boolean own = viewer.getUuid().toString().equals(ownerId);
 		if (own && !config.ownerSeesOwnWord && !alone) {
 			return "";
 		}
@@ -601,7 +602,7 @@ public final class ServerRuntime {
 		if (config.protectedZones == null || config.protectedZones.isEmpty()) {
 			return false;
 		}
-		String dimension = Compat.dimensionId(player.getServerWorld());
+		String dimension = Compat.dimensionId(Compat.serverWorldOf(player));
 		BlockPos pos = player.getBlockPos();
 		for (Zone zone : config.protectedZones) {
 			if (zone.contains(dimension, pos)) {
@@ -625,13 +626,13 @@ public final class ServerRuntime {
 	}
 
 	public boolean onPunishCooldown(ServerPlayerEntity player) {
-		long last = state.lastPunish.getOrDefault(player.getUUID().toString(), 0L);
+		long last = state.lastPunish.getOrDefault(player.getUuid().toString(), 0L);
 		return System.currentTimeMillis() - last < config.punishCooldownSeconds * 1000L;
 	}
 
 	public void markPunish(ServerPlayerEntity player) {
-		state.lastPunish.put(player.getUUID().toString(), System.currentTimeMillis());
-		state.addPunish(player.getUUID());
+		state.lastPunish.put(player.getUuid().toString(), System.currentTimeMillis());
+		state.addPunish(player.getUuid());
 		dirty = true;
 	}
 
@@ -649,7 +650,7 @@ public final class ServerRuntime {
 		return types;
 	}
 
-	public World worldOf(ServerPlayerEntity player) {
+	public ServerWorld worldOf(ServerPlayerEntity player) {
 		return Compat.serverWorldOf(player);
 	}
 
