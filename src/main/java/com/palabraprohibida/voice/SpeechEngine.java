@@ -246,7 +246,16 @@ public final class SpeechEngine {
 		}
 	}
 
+	/** Envoltorio: la API de Vosk lanza IOException en casi todas sus llamadas. */
 	private void process(Frame frame) {
+		try {
+			processUnsafe(frame);
+		} catch (Exception e) {
+			Pp.LOG.warn("Fallo el reconocimiento: {}", e.getMessage());
+		}
+	}
+
+	private void processUnsafe(Frame frame) throws Exception {
 		Session session;
 		synchronized (sessions) {
 			session = sessions.get(frame.speaker);

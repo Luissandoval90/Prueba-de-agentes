@@ -420,7 +420,7 @@ public class MenuScreen extends Screen {
 
 	private void renderRows(DrawContext context, int x, int top, int width, int mouseX, int mouseY) {
 		for (Row row : rows) {
-			int y = Math.round(top + row.y - scroll);
+			int y = (int) Math.round(top + row.y - scroll);
 			if (y + row.height < top || y > this.height) {
 				continue;
 			}
@@ -505,7 +505,7 @@ public class MenuScreen extends Screen {
 			int column = i % columns;
 			int rowIndex = i / columns;
 			int cardX = x + column * (cardWidth + 6);
-			int cardY = Math.round(top + rowIndex * (cardHeight + 6) - scroll + Math.min(60, (now - enterTime) / 6.0));
+			int cardY = (int) Math.round(top + rowIndex * (cardHeight + 6) - scroll + Math.min(60, (now - enterTime) / 6.0));
 			if (cardY > this.height || cardY + cardHeight < top) {
 				continue;
 			}
@@ -529,7 +529,7 @@ public class MenuScreen extends Screen {
 
 	private void renderPresets(DrawContext context, int x, int top, int width, int mouseX, int mouseY) {
 		// 9 posiciones predefinidas en una cuadricula 3x3, debajo de las filas.
-		int startY = Math.round(top + rowsHeight() - scroll + 8);
+		int startY = (int) Math.round(top + rowsHeight() - scroll + 8);
 		int size = 24;
 		for (int row = 0; row < 3; row++) {
 			for (int column = 0; column < 3; column++) {
@@ -553,7 +553,7 @@ public class MenuScreen extends Screen {
 	}
 
 	private void renderChips(DrawContext context, int x, int top, int width) {
-		int startY = Math.round(top + rowsHeight() - scroll + 6);
+		int startY = (int) Math.round(top + rowsHeight() - scroll + 6);
 		String title = text("palabraprohibida.menu.words.fallback_list");
 		Draw.text(context, title, x, startY, Theme.TEXT_FAINT);
 		int chipX = x;
@@ -661,7 +661,7 @@ public class MenuScreen extends Screen {
 			return;
 		}
 		for (Row row : rows) {
-			int y = Math.round(top + row.y - scroll);
+			int y = (int) Math.round(top + row.y - scroll);
 			if (mouseY < y || mouseY > y + row.height || mouseX < x || mouseX > x + width) {
 				continue;
 			}
@@ -725,7 +725,7 @@ public class MenuScreen extends Screen {
 			int column = i % columns;
 			int rowIndex = i / columns;
 			int cardX = x + column * (cardWidth + 6);
-			int cardY = Math.round(top + rowIndex * (cardHeight + 6) - scroll + Math.min(60, (System.currentTimeMillis() - enterTime) / 6.0));
+			int cardY = (int) Math.round(top + rowIndex * (cardHeight + 6) - scroll + Math.min(60, (System.currentTimeMillis() - enterTime) / 6.0));
 			if (mouseX >= cardX && mouseX <= cardX + cardWidth && mouseY >= cardY && mouseY <= cardY + cardHeight) {
 				if (!ClientState.admin) {
 					notifyLocked();
@@ -739,7 +739,7 @@ public class MenuScreen extends Screen {
 
 	private boolean clickWords(int x, int top, int width, int mouseX, int mouseY) {
 		// Chips de la lista de respaldo: clic para quitar.
-		int startY = Math.round(top + rowsHeight() - scroll + 6) + 14;
+		int startY = (int) Math.round(top + rowsHeight() - scroll + 6) + 14;
 		int chipX = x;
 		int chipY = startY;
 		for (String word : new ArrayList<>(ClientState.config.fallbackWords)) {
@@ -776,7 +776,7 @@ public class MenuScreen extends Screen {
 	}
 
 	private boolean clickPresets(int x, int top, int mouseX, int mouseY) {
-		int startY = Math.round(top + rowsHeight() - scroll + 8);
+		int startY = (int) Math.round(top + rowsHeight() - scroll + 8);
 		int size = 24;
 		for (int row = 0; row < 3; row++) {
 			for (int column = 0; column < 3; column++) {
