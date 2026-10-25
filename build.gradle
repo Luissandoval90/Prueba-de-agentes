@@ -1,0 +1,95 @@
+plugins {
+	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+	id 'maven-publish'
+}
+
+version = project.version
+group = project.group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+repositories {
+	mavenCentral()
+	// API de Simple Voice Chat
+	maven {
+		name = 'maxhenkel'
+		url = 'https://maven.maxhenkel.de/repository/public'
+	}
+	// Mod Menu
+	maven {
+		name = 'terraformers'
+		url = 'https://maven.terraformersmc.com/releases/'
+	}
+}
+
+loom {
+	splitEnvironmentSourceSets()
+
+	mods {
+		"palabraprohibida" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	// Simple Voice Chat: la API es un jar plano, el mod la aporta en tiempo de ejecucion.
+	modCompileOnly "de.maxhenkel.voicechat:voicechat-api:${project.voicechat_version}"
+
+	// Mod Menu: integracion opcional, nunca obligatoria.
+	modCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+	// Vosk dentro del jar, sin dependencias transitivas (JNA ya viene con Minecraft).
+	include(implementation("com.alphacephei:vosk:0.3.45") {
+		transitive = false
+	})
+
+	compileOnly 'org.jetbrains:annotations:24.1.0'
+}
+
+processResources {
+	def version = project.version
+	inputs.property 'version', version
+
+	filesMatching('fabric.mod.json') {
+		expand 'version': version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 21
+	it.options.encoding = 'UTF-8'
+}
+
+java {
+	withSourcesJar()
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+	def projectName = project.name
+	inputs.property 'projectName', projectName
+
+	from('LICENSE') {
+		rename { "${it}_${projectName}" }
+	}
+}
+
+publishing {
+	publications {
+		create('mavenJava', MavenPublication) {
+			from components.java
+		}
+	}
+	repositories {
+	}
+}
