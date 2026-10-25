@@ -1,0 +1,47 @@
+{
+	"schemaVersion": 1,
+	"id": "palabraprohibida",
+	"version": "${version}",
+	"name": "Palabra Prohibida",
+	"description": "Palabras prohibidas por voz, reconocidas sin conexion con Vosk y castigadas por el servidor.",
+	"authors": [
+		"Palabra Prohibida"
+	],
+	"contact": {
+		"homepage": "https://example.com/palabraprohibida",
+		"sources": "https://example.com/palabraprohibida"
+	},
+	"license": "MIT",
+	"icon": "assets/palabraprohibida/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.palabraprohibida.PalabraProhibida"
+		],
+		"client": [
+			"com.palabraprohibida.client.PalabraProhibidaClient"
+		],
+		"voicechat": [
+			"com.palabraprohibida.voice.VoicePlugin"
+		],
+		"modmenu": [
+			"com.palabraprohibida.client.ModMenuIntegration"
+		]
+	},
+	"mixins": [
+		{
+			"config": "palabraprohibida.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.18.0",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*",
+		"voicechat": ">=2.6.0"
+	},
+	"suggests": {
+		"modmenu": "*"
+	}
+}
