@@ -62,12 +62,13 @@ chmod +x gradlew && ./gradlew build && ls build/libs
 Genera `build/libs/palabraprohibida-1.0.0.jar` (más `-sources.jar`). El jar incluye Vosk
 (`include`, sin transitivas) y **no** incluye Simple Voice Chat.
 
-> **Aviso honesto sobre la compilación**: este proyecto se escribió en un entorno sin
-> acceso a `maven.fabricmc.net` ni a los repositorios de Mojang, así que **no se ha podido
-> ejecutar `./gradlew build`**. El código se escribió contra los mappings Yarn
-> `1.21.11+build.6` y la API 0.141.6 de Fabric, comprobando nombres de clases y métodos en
-> los mappings y en el código fuente de Fabric API / Simple Voice Chat de la rama 1.21.11.
-> La sección 6 lista los puntos con más probabilidad de necesitar un retoque.
+> **Aviso honesto sobre la compilación**: todos los nombres se comprobaron contra los
+> mappings **Yarn `1.21.11+build.6`** (los del tag, no los de la rama `1.21.11`, que va por
+> delante) y contra el código fuente de Fabric API / Simple Voice Chat de esa versión. En el
+> Codespace del autor, `compileJava` (el código de servidor y voz) ya compila; la parte de
+> cliente se está verificando de la misma forma. El entorno donde se escribió el mod no tenía
+> JDK ni acceso a Maven, así que **el `./gradlew build` completo hay que ejecutarlo en tu
+> máquina**. La sección 6 lista los puntos delicados y cómo se resolvió cada uno.
 
 ## 3. Instalación
 
@@ -166,12 +167,17 @@ Para cada uno, desde el menú **Castigos** (icono → *Probar*) o
 Los nombres de esta lista son los que más han cambiado entre 1.21.9 y 1.21.11, o los que
 la documentación de Yarn no cubre bien. Todos están concentrados a propósito:
 
-1. **`Compat.java`** — `Entity#getEntityWorld()` (el antiguo `getWorld()`), `ServerPlayerEntity#getServerWorld()`,
+1. **`Compat.java`** — `Entity#getEntityWorld()` (el antiguo `getWorld()`) y `Entity#getUuid()`
+   (heredado de `UniquelyIdentifiable`, no `getUUID()`); `ServerPlayerEntity` **no** tiene
+   `getServerWorld()` ni `getServer()`: se usan `(ServerWorld) player.getEntityWorld()` y
+   `world.getServer()`,
    `getPermissions().hasPermission(DefaultPermissions.GAMEMASTERS)`, `MinecraftServer#isHost(PlayerConfigEntry)`,
    `world.playSound(...)` con `SoundEvent` + `SoundCategory` (las constantes de `SoundCategory`
    se buscan por `getName()`), `Registries.STATUS_EFFECT/#getEntry`, `Registries.ATTRIBUTE`,
    `EntityAttributeModifier` (constructor con `Identifier`, `Operation`, `AttributeModifierSlot`).
-2. **`net/Payloads.java`** — `CustomPayload.Id`, `PacketCodec.of`, `RegistryByteBuf#writeString/readString`
+2. **`net/Payloads.java`** — `CustomPayload.Id`, `PacketCodec.of` (el encoder recibe `(value, buf)`,
+   no `(buf, value)`; para métodos estáticos con el buffer primero sería `ofStatic`),
+   `RegistryByteBuf#writeString/readString`
    y `PayloadTypeRegistry.playC2S()/playS2C()` (devuelven `RegistryByteBuf`).
 3. **`voice/SpeechEngine.java` + `voice/ModelManager.java`** — API de Vosk 0.3.45
    (`Model`, `Recognizer`, `setWords`, `acceptWaveForm`, `getResult/getPartialResult/getFinalResult`)
@@ -183,10 +189,13 @@ la documentación de Yarn no cubre bien. Todos están concentrados a propósito:
    (`pushMatrix/popMatrix/scale`) y `drawTexture` exige un `RenderPipeline`
    (`RenderPipelines.GUI_TEXTURED`). Si cambian, se arregla solo aquí.
 6. **`client/ui/*`** — entrada por `glfwGetMouseButton` (no se usan `Click`/`KeyInput`),
-   `Screen#render(DrawContext,int,int,float)`, `Screen#addDrawableChild`,
-   `Screens.getButtons(screen)`, `KeyBinding.Category.create(Identifier)` y el
+   `Screen#render(DrawContext,int,int,float)`, `KeyBinding.Category.create(Identifier)` y el
    constructor `KeyBinding(String, int, Category)` (código GLFW directo).
+   Ojo: `Screen#addDrawableChild` es `protected`, así que el botón del menú de pausa se
+   añade con `Screens.getButtons(screen).add(button)`; y `Math.round(double)` devuelve
+   `long`, de ahí los `(int) Math.round(...)` al posicionar.
 7. **`client/hud/HudOverlay.java`** — `HudElement#render(DrawContext, RenderTickCounter)`,
+   `Entity#getEyePos()` (en `build.6` no existe `getPos()`),
    `client.options.hudHidden` y la proyección manual de las etiquetas sobre la cabeza
    (si los signos de yaw/pitch cambian, la etiqueta saldría reflejada: es cosmético).
 8. **`client/mixin/EntityMixin.java`** — el objetivo es `Entity#changeLookDirection(DD)`;
@@ -194,7 +203,8 @@ la documentación de Yarn no cubre bien. Todos están concentrados a propósito:
 9. **`state/StateStore.java`** — `MinecraftServer#getSavePath(WorldSavePath.ROOT)`.
 10. **`server/ServerRuntime.java`** — `ServerPlayNetworking.canSend(player, payload.getId())`
    y `ServerPlayNetworking.send(...)`.
-11. **`punish/Punisher.java`** — `PlayerInventory#getStack/setStack`, `Entity#dropItem(ServerWorld, ItemStack)`,
+11. **`punish/Punisher.java`** — `PlayerInventory#getStack/setStack`, `Entity#dropStack(ServerWorld, ItemStack)`
+    (`dropItem` sólo acepta `ItemConvertible`),
     `ServerPlayNetworkHandler#requestTeleport(...)`, `PlayerEntity#dropSelectedItem(boolean)`,
     `setFireTicks`, `getHungerManager().setFoodLevel`, `addExperienceLevels`, y el
     `summon` por comando para el mob hostil (evita depender de las constantes de `EntityType`).

@@ -174,7 +174,7 @@ public final class HudOverlay implements HudElement {
 			if (word == null || word.isEmpty()) {
 				continue;
 			}
-			Vec3d head = player.getPos().add(0.0, player.getHeight() + 0.55, 0.0);
+			Vec3d head = player.getEyePos().add(0.0, 0.35, 0.0);
 			float[] screen = project(client, head);
 			if (screen == null) {
 				continue;

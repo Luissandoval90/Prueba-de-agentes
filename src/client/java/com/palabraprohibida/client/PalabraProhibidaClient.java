@@ -129,7 +129,7 @@ public class PalabraProhibidaClient implements ClientModInitializer {
 				// Mano torpe: la hotbar se mueve sola de vez en cuando.
 				if (client.player.age % 18 == 0) {
 					int slot = client.player.getInventory().getSelectedSlot();
-					client.player.getInventory().selectedSlot = (slot + 1) % 9;
+					client.player.getInventory().setSelectedSlot((slot + 1) % 9);
 				}
 			}
 		});
@@ -174,7 +174,8 @@ public class PalabraProhibidaClient implements ClientModInitializer {
 							b -> client.setScreen(new MenuScreen()))
 					.dimensions(scaledWidth / 2 - 100, y, 200, 20)
 					.build();
-			screen.addDrawableChild(button);
+			// addDrawableChild es protected; la lista de Fabric admite altas.
+			Screens.getButtons(screen).add(button);
 		});
 	}
 
