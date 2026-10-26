@@ -97,6 +97,24 @@ Genera `build/libs/palabraprohibida-1.0.0.jar` (más `-sources.jar`). El jar inc
    - `config/palabraprohibida/server.json` → configuración global (solo admin).
    - `<mundo>/palabraprohibida/state.json` → palabras, contadores y ranking.
 
+## 3.1. Vista previa del menú de castigos
+
+Imágenes generadas con las medidas, colores y textos reales del código (GUI de 640×360 mostrada al doble):
+
+| Pantalla | Archivo |
+|---|---|
+| Menú principal → Castigos (los 20, con peso y estado) | `docs/preview/menu-castigos.png` |
+| Detalle de un castigo con dos parámetros (Lentitud) | `docs/preview/castigo-detalle.png` |
+| Castigo con interruptor extra (Mob hostil → Permitir creeper) | `docs/preview/castigo-mob.png` |
+
+![Menú de castigos](docs/preview/menu-castigos.png)
+
+![Detalle de un castigo](docs/preview/castigo-detalle.png)
+
+Son reconstrucciones estáticas: en el juego los iconos de ítem son los modelos 3D reales de
+Minecraft, la fuente es la bitmap del juego y las animaciones (deslizamiento del indicador,
+entrada de las tarjetas en ~400 ms) no se ven en una imagen fija.
+
 ## 4. Comandos (solo admin: operador o anfitrión)
 
 ```

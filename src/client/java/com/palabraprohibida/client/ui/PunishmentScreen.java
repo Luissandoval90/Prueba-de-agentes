@@ -61,6 +61,13 @@ public class PunishmentScreen extends Screen {
 		}
 	}
 
+	/** Y de los botones: justo debajo del contenido, sin bajar del limite. */
+	private int buttonY() {
+		int contentBottom = top + 42 + 26 + 24 + params.size() * 20
+				+ (type == PunishmentType.MOB ? 24 : 0);
+		return Math.min(this.height - 60, contentBottom + 14);
+	}
+
 	@Override
 	public boolean shouldPause() {
 		return false;
@@ -77,8 +84,8 @@ public class PunishmentScreen extends Screen {
 		sliderX = x + 120;
 		sliderWidth = panelWidth - 140;
 
-		Draw.card(context, x - 8, top - 12, panelWidth + 16, this.height - top - 24, false, false);
-		Draw.item(context, type.iconItem(), x + 6, top + 2, 3.0f);
+		Draw.card(context, x - 8, top - 12, panelWidth + 16, buttonY() + 28 - (top - 12), false, false);
+		Draw.item(context, type.iconItem(), x + 6, top + 4, 2.0f);
 		Draw.text(context, Text.translatable(type.translationKey()).getString(), x + 64, top + 8, Theme.TEXT);
 		Draw.text(context, Text.translatable(type.descriptionKey()).getString(), x + 64, top + 22, Theme.TEXT_FAINT);
 
@@ -115,7 +122,7 @@ public class PunishmentScreen extends Screen {
 			y += 24;
 		}
 
-		int buttonY = this.height - 40;
+		int buttonY = buttonY();
 		boolean testHover = inside(mouseX, mouseY, x, buttonY, 100, 20);
 		boolean backHover = inside(mouseX, mouseY, x + panelWidth - 100, buttonY, 100, 20);
 		Draw.button(context, x, buttonY, 100, 20,
@@ -138,7 +145,7 @@ public class PunishmentScreen extends Screen {
 			if (!ClientState.admin) {
 				ClientState.pushNotice(Text.translatable("palabraprohibida.menu.admin_only").getString());
 				// Volver siempre se permite.
-				if (inside(mouseX, mouseY, x + panelWidth - 100, this.height - 40, 100, 20)) {
+				if (inside(mouseX, mouseY, x + panelWidth - 100, buttonY(), 100, 20)) {
 					close();
 				}
 				return;
@@ -170,7 +177,7 @@ public class PunishmentScreen extends Screen {
 				sync();
 				return;
 			}
-			int buttonY = this.height - 40;
+			int buttonY = buttonY();
 			if (inside(mouseX, mouseY, x, buttonY, 100, 20)) {
 				ClientNet.action("test_punishment", type.id());
 				return;
