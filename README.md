@@ -77,7 +77,9 @@ Genera `build/libs/palabraprohibida-1.0.0.jar` (más `-sources.jar`). El jar inc
 1. Minecraft **1.21.11** con **Fabric Loader ≥ 0.18.0** (compilado con 0.19.5).
 2. En `mods/`:
    - `fabric-api-0.141.6+1.21.11.jar`
-   - **Simple Voice Chat** `fabric-1.21.11-2.6.20.jar` (obligatorio)
+   - **Simple Voice Chat** `voicechat-fabric-1.21.11-2.6.x.jar` (obligatorio). Su número de
+     versión es del tipo `1.21.11-2.6.22`, no semver puro, así que el mod lo declara como
+     `"voicechat": "*"`: exige que esté presente, sin atar a una versión concreta.
    - `palabraprohibida-1.0.0.jar`
    - opcional: Mod Menu 17.0.0-beta.1
 3. Al primer inicio se descarga solo `vosk-model-small-es-0.42` (39 MB) a
@@ -96,6 +98,24 @@ Genera `build/libs/palabraprohibida-1.0.0.jar` (más `-sources.jar`). El jar inc
 4. Archivos:
    - `config/palabraprohibida/server.json` → configuración global (solo admin).
    - `<mundo>/palabraprohibida/state.json` → palabras, contadores y ranking.
+
+## 3.1. Vista previa del menú de castigos
+
+Imágenes generadas con las medidas, colores y textos reales del código (GUI de 640×360 mostrada al doble):
+
+| Pantalla | Archivo |
+|---|---|
+| Menú principal → Castigos (los 20, con peso y estado) | `docs/preview/menu-castigos.png` |
+| Detalle de un castigo con dos parámetros (Lentitud) | `docs/preview/castigo-detalle.png` |
+| Castigo con interruptor extra (Mob hostil → Permitir creeper) | `docs/preview/castigo-mob.png` |
+
+![Menú de castigos](docs/preview/menu-castigos.png)
+
+![Detalle de un castigo](docs/preview/castigo-detalle.png)
+
+Son reconstrucciones estáticas: en el juego los iconos de ítem son los modelos 3D reales de
+Minecraft, la fuente es la bitmap del juego y las animaciones (deslizamiento del indicador,
+entrada de las tarjetas en ~400 ms) no se ven en una imagen fija.
 
 ## 4. Comandos (solo admin: operador o anfitrión)
 
